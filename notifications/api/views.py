@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from notifications.api.serializers import UserSerializer, GroupSerializer
+from api.serializers import UserSerializer, GroupSerializer
+from .tasks import add
+from django.http import HttpResponse
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -20,3 +22,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+def testing_task(request):
+    x = 10
+    y = 15
+    sum = add.delay(x, y)
+    return HttpResponse('response done')
